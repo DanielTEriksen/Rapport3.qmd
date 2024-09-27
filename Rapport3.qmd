@@ -1,0 +1,292 @@
+---
+title: "Rapport 3"
+author: Daniel Thuv Eriksen
+format: html
+  
+---
+```{r}
+#| code-fold: true
+#| warning: false
+#| message: false
+
+library(tidyverse)
+
+set.seed(1)
+population <- rnorm(1000000, mean = 1.5, sd = 3)
+
+
+samp1 <- data.frame(y = sample(population, 8, replace = FALSE))
+
+samp2 <- data.frame(y = sample(population, 40, replace = FALSE))
+
+
+m1 <- lm(y ~ 1, data = samp1)
+m2 <- lm(y ~ 1, data = samp2)
+
+summary(m1)
+summary(m2)
+
+
+summary_m1 <- summary(m1)
+coef_m1 <- coef(summary_m1)
+
+# Estimate, SE, t-verdi, p-verdi for m1
+estimate_m1 <- coef_m1[1, "Estimate"]
+se_m1 <- coef_m1[1, "Std. Error"]
+t_value_m1 <- coef_m1[1, "t value"]
+p_value_m1 <- coef_m1[1, "Pr(>|t|)"]
+
+cat("Model m1 (Sample size 8):\n")
+cat("Estimate:", estimate_m1, "\nSE:", se_m1, "\nt-value:", t_value_m1, "\np-value:", p_value_m1, "\n\n")
+
+# Summary for m2 (sample size 40)
+summary_m2 <- summary(m2)
+coef_m2 <- coef(summary_m2)
+
+## Estimate, SE, t-verdi, p-verdi for m2
+estimate_m2 <- coef_m2[1, "Estimate"]
+se_m2 <- coef_m2[1, "Std. Error"]
+t_value_m2 <- coef_m2[1, "t value"]
+p_value_m2 <- coef_m2[1, "Pr(>|t|)"]
+
+cat("Model m2 (Sample size 40):\n")
+cat("Estimate:", estimate_m2, "\nSE:", se_m2, "\nt-value:", t_value_m2, "\np-value:", p_value_m2, "\n")
+
+
+```
+
+## Oppgave 1 - Forklar estimate, SE, t-verdi og p-verdi fra regresjonsmodellene m1 og m2
+Estimate, SE, t-verdi og p-verdi gir oss innsikt i gjennomsnittsforskjellen mellom behandlingene, hvor presist estimatet er, hvor ekstrem t-verdien er, og sannsynligheten forat resultatene er tilfeldige (p-verdi).
+
+- Estimate (Estimert verdi):
+m1 Estimate = 1.839727
+m2 Estimate = 1.564161
+Estimate (eller estimeringen) er den gjennomsnittlige verdien for den avhengige variabelen (y) i hver av de to modellene. Dette kan tolkes som forskjellen mellom de to behandlingene i studien. For modell m1 (med et mindre utvalg, n = 8), er den estimerte verdien for forskjellen mellom behandlingene 1.84. I modell m2 (med et større utvalg, n = 40) er den estimerte forskjellen litt lavere, på 1.56. Begge estimatene er positive, noe som indikerer at den ene behandlingen kan være bedre enn den andre i begge studiene.
+
+- SE (Standard Error / Standardfeil):
+m1 SE = 1.251293
+m2 SE = 0.4774117
+SE (standardfeilen) er et mål på variasjonen av estimatet, det vil si hvor presist vi kan estimere den gjennomsnittlige forskjellen mellom behandlingene. Standardfeilen for modell m1 er mye høyere (1.25) sammenlignet med modell m2 (0.48). Dette skyldes at modell m1 har et mye mindre utvalg (n = 8), som fører til større usikkerhet i estimatet. I modell m2, der vi har et større utvalg (n = 40), er standardfeilen lavere, noe som betyr at estimatet er mer presist.
+
+- T-verdi (t-statistikk):
+m1 T-verdi = 1.470261
+m2 T-verdi = 3.276336
+T-verdien er forholdet mellom estimatet (Estimate) og standardfeilen (SE), og den brukes til å avgjøre om det er statistisk signifikant forskjell mellom behandlingene. For modell m1 er t-verdien 1.47, som er relativt lav og viser at forskjellen mellom behandlingene ikke er veldig stor sammenlignet med den underliggende variasjonen. For modell m2 er t-verdien 3.28, som er mye høyere, og dette indikerer at vi har en sterkere indikasjon på at det er en faktisk forskjell mellom behandlingene når vi har et større utvalg.
+
+- P-verdi:
+m1 P-verdi = 0.1849546
+m2 P-verdi = 0.002212965
+P-verdien representerer sannsynligheten for å observere en t-verdi som er like ekstrem som den beregnede, gitt at nullhypotesen (ingen forskjell mellom behandlingene) er sann. For modell m1 er p-verdien 0.185, som betyr at det er en 18.5% sjanse for å observere en forskjell like stor eller større enn den vi har sett, selv om det ikke er noen reell forskjell. Siden p-verdien er mye større enn 0.05, kan vi ikke avvise nullhypotesen, og vi kan ikke si med stor sikkerhet at det er en forskjell mellom behandlingene. For modell m2 er p-verdien derimot 0.0022, som er mye lavere enn 0.05. Dette betyr at det er en veldig liten sjanse (0.22%) for å observere en slik forskjell hvis nullhypotesen er sann. Her kan vi avvise nullhypotesen og konkludere med at det sannsynligvis er en reell forskjell mellom de to behandlingene.
+
+
+## Oppgave 2 - Diskusjon av forskjellene mellom m1 og m2
+Forskjellene mellom resultatene fra m1 og m2 skyldes hovedsakelig forskjellen i utvalgsstørrelse. Modell m1 har en liten utvalgsstørrelse (n = 8), noe som fører til større usikkerhet (høyere SE) og en svakere t-verdi. Med større usikkerhet blir det vanskeligere å trekke sikre konklusjoner, noe som gjenspeiles i den høyere p-verdien (0.185), som tyder på at det ikke er statistisk signifikante forskjeller mellom behandlingene.
+
+Modell m2 har en større utvalgsstørrelse (n = 40), noe som reduserer standardfeilen, øker t-verdien, og gir en lavere p-verdi (0.0022). Dette betyr at vi med større sikkerhet kan si at forskjellen mellom behandlingene er reell og statistisk signifikant. Med et større utvalg blir estimatene mer presise, og resultatene er mer pålitelige.
+
+## Oppgave 3 - Hvorfor bruker vi det skyggelagte området i t-fordelingen?
+Det skyggelagte området i t-fordelingen representerer de mest ekstreme verdiene for t-statistikken, gitt at nullhypotesen er sann. Når vi utfører en t-test, er vi interessert i sannsynligheten for å få en t-verdi like ekstrem som den observerte (eller mer ekstrem) under antakelsen om at det ikke er noen reell forskjell mellom behandlingene (nullhypotesen).
+
+Vi bruker både den nedre og øvre halvdelen av fordelingen (to-halet test), fordi vi ønsker å teste om forskjellen mellom behandlingene er signifikant i begge retninger – enten behandlingen har en positiv eller negativ effekt. Hvis t-verdien faller innenfor det skyggelagte området (dvs. at p-verdien er liten), kan vi konkludere med at forskjellen er statistisk signifikant, og at vi bør avvise nullhypotesen.
+
+Med m1 har vi en t-verdi på 1.47 og en tilhørende p-verdi på 0.185, som betyr at vi ikke kan avvise nullhypotesen (ingen reell forskjell). I m2 derimot, gir en t-verdi på 3.28 en p-verdi på 0.0022, noe som gir en signifikant forskjell.
+
+```{r}
+#| code-fold: true
+
+# Create data frames to store the model estimates
+results_8 <- data.frame(estimate = rep(NA, 1000), 
+                      se = rep(NA, 1000), 
+                      pval = rep(NA, 1000), 
+                      n = 8)  
+
+results_40 <- data.frame(estimate = rep(NA, 1000), 
+                      se = rep(NA, 1000), 
+                      pval = rep(NA, 1000), 
+                      n = 40)
+
+# A for loop used to sample 1000 studies, each iteration (i) will draw a new sample
+# from the population. 
+
+for(i in 1:1000) {
+  
+  # Draw a sample 
+  samp1 <- data.frame(y = sample(population, 8, replace = FALSE))
+  samp2 <- data.frame(y = sample(population, 40, replace = FALSE))
+
+  # Model the data
+  m1 <- lm(y ~ 1, data = samp1)
+  m2 <- lm(y ~ 1, data = samp2)
+  
+  # Extract values from the models
+  results_8[i, 1] <- coef(summary(m1))[1, 1]
+  results_8[i, 2] <- coef(summary(m1))[1, 2]
+  results_8[i, 3] <- coef(summary(m1))[1, 4]
+
+  results_40[i, 1] <- coef(summary(m2))[1, 1]
+  results_40[i, 2] <- coef(summary(m2))[1, 2]
+  results_40[i, 3] <- coef(summary(m2))[1, 4]
+  
+  
+}
+
+
+# Save the results in a combined data frame
+
+results <- bind_rows(results_8, results_40)
+
+library(dplyr)
+
+# Beregn standardavviket for 'estimate' og gjennomsnittet av 'se' for hver gruppestørrelse
+results_summary <- results %>%
+  group_by(n) %>%
+  summarise(sd_estimate = sd(estimate), 
+            mean_se = mean(se))
+
+print(results_summary)
+
+library(ggplot2)
+
+# Lag et histogram av p-verdiene for begge prøvestørrelsene
+results %>%
+  ggplot(aes(pval)) + 
+  geom_histogram(binwidth = 0.05) +
+  facet_wrap(~ n) +
+  labs(title = "Histogram of p-values for different sample sizes",
+       x = "P-value", y = "Count") +
+  theme_minimal()
+
+# Beregn andelen av studiene som har en p-verdi mindre enn 0.05
+results %>%
+  filter(pval < 0.05) %>%
+  group_by(n) %>%
+  summarise(sig_results = n() / 1000) # Vi deler på 1000 fordi vi kjørte 1000 studier
+
+library(pwr)
+
+# Beregn statistisk styrke for n=8
+power_8 <- pwr.t.test(n = 8, sig.level = 0.05, d = 1.5/3, type = "one.sample")
+print(power_8)
+
+# Beregn statistisk styrke for n=40
+power_40 <- pwr.t.test(n = 40, sig.level = 0.05, d = 1.5/3, type = "one.sample")
+print(power_40)
+
+
+
+```
+
+## Oppgave 4 - Beregning av standardavvik for estimatvariabelen og gjennomsnittlig standardfeil for utvalgsstørrelser 8 og 40
+
+N=8 så er sd 1.07. Gjennomsnittlig SE er på 1.01.
+N=40 så er sd 0.474. Gjennomsnittlig SE er på 0.470.
+Standardavviket av estimatene og gjennomsnittet av standardfeilene (SE) er svært like fordi de begge måler hvor mye gjennomsnittsestimater varierer over mange studier. Standardavviket av estimatene fra 1000 simuleringer representerer den faktiske variasjonen mellom gjennomsnittene fra forskjellige studier, mens SE er den teoretiske forventningen om denne variasjonen. I praksis, når vi gjentar studien mange ganger (som vi gjør i simuleringene), vil den faktiske variasjonen i estimatene (standardavviket) tilnærme seg SE, som er en beregnet verdi for forventet variasjon.
+
+Disse to verdiene er derfor svært like fordi SE er konstruert for å gi et anslag på hvor mye gjennomsnittsestimatene vil variere mellom forskjellige studier. SE beregnes som standardavviket i dataene delt på kvadratroten av gruppestørrelsen (SE=SD/√n), og som et mål på presisjonen i et gjennomsnittsestimat, reduseres SE når testgruppestørrelsen øker.
+
+Når vi ser på forskjellen mellom gruppestørrelsen (n = 8 og n = 40), ser vi at både standardavviket til estimatene og SE reduseres når gruppestørrelsen øker. Dette skyldes at større utvalg gir mer nøyaktige estimater av gjennomsnittet og dermed mindre variasjon mellom ulike studier
+
+
+## Oppgave 5 - Tolkning av histogram av p-verdier for ulike utvalgsstørrelser og deres betydning for statistisk styrke
+
+N = 8:
+
+Histogrammet viser en bred fordeling av p-verdier, med en høyere konsentrasjon av p-verdier i den øvre delen av skalaen (nær 1). Dette tyder på at de fleste av testene som ble utført med denne gruppestørrelsen ikke er statistisk signifikante, med mange p-verdier som overstiger 0.05. Det er også en liten topp på venstre side av histogrammet, men det er relativt få p-verdier som er betydelig lave (mindre enn 0.05).
+
+N= 40:
+
+Histogrammet viser en klar konsentrasjon av p-verdier som ligger mye nærmere null, noe som indikerer at flere av testene i denne gruppen er statistisk signifikante. Det er en høy topp ved 0.00, som tyder på at mange av testene har avvist nullhypotesen
+
+Dette histogrammet demonstrerer tydelig effekten på statistisk styrke for den større utvalgsstørrelsen. I utvalgsstørrelsen (n = 40) ser vi en mye høyere andel p-verdier som indikerer statistisk signifikans (mindre enn 0.05), noe som betyr at vi har en større sjanse til å oppdage reelle effekter i dataene. I motsetning til dette, den mindre utvalgsstørrelsen (n = 8) resulterer i et lavere antall signifikante p-verdier, som kan indikere at vi har større usikkerhet og mindre presisjon i estimatene.
+
+## Oppgave 6 - Antall studier med statistisk signifikante effekter basert på spesifisert signifikansnivå
+
+Basert på analysen av dataene, har vi beregnet antall studier fra hver utvalgsstørrelse (n = 8 og n = 40) som erklærer en statistisk signifikant effekt ved et signifikansnivå på 0.05. Resultatene viser at omtrent 24.3% av studiene med en utvalgssgruppe på 8 oppnådde signifikante p-verdier, mens hele 87.5% av studiene med utvalgssgruppe på 40 var signifikante. Dette indikerer at større testgrupper resulterer i høyere andel signifikante funn. Dette er i samsvar med forventningen om at større utvalg gir mer pålitelige estimater og øker den statistiske styrken, noe som gjør det lettere å oppdage reelle effekter i dataene. Dermed bekrefter disse resultatene viktigheten av tilstrekkelig med deltakere i statistiske analyser for å oppnå meningsfulle og signifikante funn.
+
+
+## Oppgave 7 - Beregning av styrken i en en-utvalgs t-test ved hjelp av pwr-pakken med effektstørrelse 1.5/3
+
+Med en utvalgsstørrelse på 8, en effektstørrelse på 0.5 og et signifikansnivå på 0.05, viser beregningene at styrken er 23.2%. Dette indikerer at det er en lav sannsynlighet (23.2%) for å avdekke en faktisk effekt i studien, dersom effekten eksisterer. Denne lave styrken forklarer hvorfor så få av studiene med n = 8 oppnådde signifikante resultater i simuleringene (24.3%). Det illustrerer også risikoen for type II-feil ved små utvalgsstørrelser, der man ofte ikke klarer å fange opp reelle effekter.
+
+Med en utvalgsstørrelse på 40 øker styrken til 86.9%, noe som gir en langt høyere sannsynlighet for å oppdage en faktisk effekt. Dette er i tråd med simuleringene, hvor 87.5% av studiene med n = 40 oppnådde signifikante resultater. Den betydelige økningen i statistisk styrke ved større utvalgsstørrelser viser at man med større utvalg får mer pålitelige resultater og reduserer risikoen for å overse ekte effekter (type II-feil)
+
+
+```{r}
+#| code-fold: true
+
+population <- rnorm(1000000, mean = 0, sd = 3)
+
+
+# Create data frames to store the model estimates
+results_8 <- data.frame(estimate = rep(NA, 1000), 
+                      se = rep(NA, 1000), 
+                      pval = rep(NA, 1000), 
+                      n = 8)  
+
+results_40 <- data.frame(estimate = rep(NA, 1000), 
+                      se = rep(NA, 1000), 
+                      pval = rep(NA, 1000), 
+                      n = 40)
+
+# A for loop used to sample 1000 studies, each iteration (i) will draw a new sample
+# from the population. 
+
+for(i in 1:1000) {
+  
+  # Draw a sample 
+  samp1 <- data.frame(y = sample(population, 8, replace = FALSE))
+  samp2 <- data.frame(y = sample(population, 40, replace = FALSE))
+
+  # Model the data
+  m1 <- lm(y ~ 1, data = samp1)
+  m2 <- lm(y ~ 1, data = samp2)
+  
+  # Extract values from the models
+  results_8[i, 1] <- coef(summary(m1))[1, 1]
+  results_8[i, 2] <- coef(summary(m1))[1, 2]
+  results_8[i, 3] <- coef(summary(m1))[1, 4]
+
+  results_40[i, 1] <- coef(summary(m2))[1, 1]
+  results_40[i, 2] <- coef(summary(m2))[1, 2]
+  results_40[i, 3] <- coef(summary(m2))[1, 4]
+  
+  
+}
+
+
+# Save the results in a combined data frame
+
+results_null <- bind_rows(results_8, results_40)
+
+```
+
+```{r}
+#| code-fold: true
+
+library(ggplot2)
+results_null %>%
+  ggplot(aes(pval)) + 
+  geom_histogram(binwidth = 0.05, color = "black", fill = "gray") +
+  facet_wrap(~ n) +
+  labs(title = "Histogram av p-verdier for ulike utvalgsstorrelser",
+       x = "P-verdi", y = "Antall")
+
+library(dplyr)
+
+false_positives <- results_null %>%
+  filter(pval < 0.05) %>%
+  group_by(n) %>%
+  summarise(false_positive_count = n(), 
+            proportion_false_positives = n()/1000)
+
+print(false_positives)
+
+
+```
+
+
+## Oppgave 8 - Antall studier med 'falske positive' resultater ved et signifikansnivå på 5 % i gjentatte studier
+
+Med et signifikansnivå på 5 % vil omtrent 5 % av studiene kunne gi et "falsk positivt" resultat, noe som betyr at vi avviser nullhypotesen selv om den faktisk er sann. Basert på resultatene fra simuleringen, ser vi at for studier med en utvalgsstørrelse på 8, var det 57 studier av 1000 som ga et falskt positivt resultat, noe som tilsvarer en andel på 5,7 %. For studier med en utvalgsstørrelse på 40, var det 56 falske positive resultater, noe som tilsvarer en andel på 5,6 %. Dette er svært nært det forventede nivået på 5 %, noe som bekrefter at selv uten en reell effekt vil omtrent 5 % av studiene vise statistisk signifikante resultater, kun på grunn av tilfeldigheter.
+
+
